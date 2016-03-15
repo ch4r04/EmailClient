@@ -4,8 +4,11 @@
 
 #pragma once
 #include "afxwin.h"
+#include "pop3.h"
+#include "smtp.h"
 
-
+extern CSmtp m_smtp;		//设置全局变量 smtp
+extern CPop3 m_pop3;		//设置全局变量 pop
 // CMyMailClientDlg 对话框
 class CMyMailClientDlg : public CDialogEx
 {
@@ -13,6 +16,7 @@ class CMyMailClientDlg : public CDialogEx
 public:
 	CMyMailClientDlg(CWnd* pParent = NULL);	// 标准构造函数
 
+	UINT ThreadFun(LPVOID pParam);
 // 对话框数据
 	enum { IDD = IDD_MYMAILCLIENT_DIALOG };
 
@@ -33,4 +37,15 @@ protected:
 public:
 	CComboBox m_comboServer;
 	afx_msg void OnCbnSelchangeServerCombo();
+	afx_msg void OnBnClickedSelServerButton();
+	CEdit m_editport;
+public:
+
+
+	virtual void OnOK();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CString m_editsmtpaddr;
+	CString m_editpopaddr;
 };
+
+

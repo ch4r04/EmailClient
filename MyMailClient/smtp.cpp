@@ -345,7 +345,7 @@ void CSmtp::SetContent(string &content)
 {
 	this->content = content;
 }
-void CSmtp::SetPort(int port)
+void CSmtp::SetPortE(int port)
 {
 	this->port = port;
 }

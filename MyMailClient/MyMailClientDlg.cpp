@@ -5,12 +5,17 @@
 #include "stdafx.h"
 #include "MyMailClient.h"
 #include "MyMailClientDlg.h"
+#include "MainMenuDlg.h"
 #include "afxdialogex.h"
+#include <string.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+
+CPop3 m_pop3;
+CSmtp m_smtp;
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -49,6 +54,8 @@ END_MESSAGE_MAP()
 
 CMyMailClientDlg::CMyMailClientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMyMailClientDlg::IDD, pParent)
+	, m_editsmtpaddr(_T(""))
+	, m_editpopaddr(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -57,6 +64,9 @@ void CMyMailClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SERVER_COMBO, m_comboServer);
+	DDX_Control(pDX, IDC_PORT_EDIT, m_editport);
+	DDX_Text(pDX, IDC_SEL_WEB_EDIT2, m_editsmtpaddr);
+	DDX_Text(pDX, IDC_SEL_WEB_EDIT, m_editpopaddr);
 }
 
 BEGIN_MESSAGE_MAP(CMyMailClientDlg, CDialogEx)
@@ -64,6 +74,7 @@ BEGIN_MESSAGE_MAP(CMyMailClientDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_CBN_SELCHANGE(IDC_SERVER_COMBO, &CMyMailClientDlg::OnCbnSelchangeServerCombo)
+	ON_BN_CLICKED(IDC_SEL_SERVER_BUTTON, &CMyMailClientDlg::OnBnClickedSelServerButton)
 END_MESSAGE_MAP()
 
 
@@ -107,6 +118,10 @@ BOOL CMyMailClientDlg::OnInitDialog()
 
 	m_comboServer.SetCurSel(0);	//默认选择网易163服务器
 	SetDlgItemText(IDC_SEL_WEB_EDIT, _T("pop.163.com"));
+	SetDlgItemText(IDC_SEL_WEB_EDIT2, _T("smtp.163.com"));
+	SetDlgItemText(IDC_PORT_EDIT, _T("110"));	//设置好端口 pop服务器端口都是110
+	SetDlgItemText(IDC_USER_EDIT, _T("my_test_jsjwl@163.com"));
+	SetDlgItemText(IDC_PWD_EDIT, _T("asd123456"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -189,7 +204,93 @@ void CMyMailClientDlg::OnCbnSelchangeServerCombo()
 	
 
 
+}
+
+
+void CMyMailClientDlg::OnBnClickedSelServerButton()
+{
+	// TODO:  完成连接服务器操作
+	UpdateData(TRUE);
+
+	/*获取服务器的字符串*/
+	CString c_address;
+	GetDlgItemText(IDC_SEL_WEB_EDIT, c_address); //获取该地址的值
+	char *m_address;
+	m_address = (LPSTR)(LPCTSTR)c_address;
+	//m_address = (LPSTR)(LPCTSTR)c_address;//字符串转换 cstring 到char *
+
+	/*获取用户名的字符串*/
+	CString c_user;
+	GetDlgItemText(IDC_USER_EDIT, c_user);
+	char *m_user = (LPSTR)(LPCTSTR)c_user;
+	
+	/*获取密码字符串*/
+	CString c_pwd;
+	GetDlgItemText(IDC_PWD_EDIT, c_pwd);
+	char *m_pwd;
+	m_pwd = (LPSTR)(LPCTSTR)c_pwd;
+	
+	m_pop3.Create(m_user, m_pwd, m_address, 110);
+	CString str;
+
+	if (FALSE == m_pop3.Connect())
+	{
+		MessageBox(_T("连接服务器失败"));
+		return;
+	}
+	else
+	{
+		MessageBox(_T("连接服务器成功"));
+		string szSvr = m_editsmtpaddr.GetBuffer();
+		m_smtp.SetSrvDomain(szSvr);		//转换字符串到smtp
+
+	
+	}
+	//尝试使用用户名和密码登陆
+	int iloginflag = m_pop3.Login();
+	if (iloginflag == 1)
+	{
+		MessageBox(_T("检查用户名是否存在"));
+		return;
+	}
+	else if (iloginflag == 2)
+	{
+		MessageBox(_T("密码错误"));
+		return;
+	}
+	else
+	{
+		MessageBox(_T("登陆成功"));
+		//登陆成功后设置用户名和密码
+		m_pop3.SetUser(m_user);
+		m_pop3.SetPwd(m_pwd);
+	}
+	// 弹出主菜单模块
+	INT_PTR nRes;
+	CMainMenuDlg menuDlg;
+	nRes = menuDlg.DoModal();
 
 
 
+}
+
+
+
+void CMyMailClientDlg::OnOK()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+
+//	CDialogEx::OnOK();
+}
+
+
+BOOL CMyMailClientDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO:  在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
+	{
+		pMsg->wParam = VK_RETURN;
+
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

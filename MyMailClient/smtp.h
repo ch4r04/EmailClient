@@ -54,7 +54,7 @@ public:
 	void SetTargetEmail(string &targetAddr);
 	void SetEmailTitle(string &title);
 	void SetContent(string &content);
-	void SetPort(int port);
+	void SetPortE(int port);
 	int SendEmail_Ex();
 };
 #endif
