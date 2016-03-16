@@ -46,6 +46,7 @@ protected:
 	char m_userpwd[64];
 	char m_svraddr[32];
 	unsigned short m_port;
+	int m_mailsum;
 
 private:
 	int Pop3Recv(char* buf, int len, int flags = 0);
@@ -54,4 +55,6 @@ public:
 	char *GetPwd();
 	void SetUser(char *username);
 	void SetPwd(char *userpwd);
+	void SetMailSum(int num);
+	int GetAllSum();
 };

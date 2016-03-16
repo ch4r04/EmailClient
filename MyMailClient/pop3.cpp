@@ -228,3 +228,9 @@ void CPop3::SetPwd(char *userpwd){
 		
 	}
 }
+void CPop3::SetMailSum(int num){
+	m_mailsum = num;
+}
+int CPop3::GetAllSum(){
+	return m_mailsum;
+}

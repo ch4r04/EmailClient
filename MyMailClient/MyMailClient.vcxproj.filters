@@ -48,6 +48,9 @@
     <ClInclude Include="WriteMailDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ReceiveMainDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyMailClient.cpp">
@@ -72,6 +75,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WriteMailDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ReceiveMainDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -212,23 +212,22 @@ void CMyMailClientDlg::OnBnClickedSelServerButton()
 	// TODO:  完成连接服务器操作
 	UpdateData(TRUE);
 
+
 	/*获取服务器的字符串*/
 	CString c_address;
 	GetDlgItemText(IDC_SEL_WEB_EDIT, c_address); //获取该地址的值
 	char *m_address;
-	m_address = (LPSTR)(LPCTSTR)c_address;
-	//m_address = (LPSTR)(LPCTSTR)c_address;//字符串转换 cstring 到char *
+	m_address = c_address.GetBuffer(0);
 
 	/*获取用户名的字符串*/
 	CString c_user;
 	GetDlgItemText(IDC_USER_EDIT, c_user);
-	char *m_user = (LPSTR)(LPCTSTR)c_user;
+	char *m_user = c_user.GetBuffer(0);
 	
 	/*获取密码字符串*/
 	CString c_pwd;
 	GetDlgItemText(IDC_PWD_EDIT, c_pwd);
-	char *m_pwd;
-	m_pwd = (LPSTR)(LPCTSTR)c_pwd;
+	char *m_pwd = c_pwd.GetBuffer(0);
 	
 	m_pop3.Create(m_user, m_pwd, m_address, 110);
 	CString str;
@@ -269,8 +268,6 @@ void CMyMailClientDlg::OnBnClickedSelServerButton()
 	INT_PTR nRes;
 	CMainMenuDlg menuDlg;
 	nRes = menuDlg.DoModal();
-
-
 
 }
 
