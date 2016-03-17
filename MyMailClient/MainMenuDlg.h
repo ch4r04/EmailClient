@@ -23,4 +23,5 @@ public:
 	virtual void OnOK();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedReciveButton();
+	afx_msg void OnBnClickedSendAllButton();
 };

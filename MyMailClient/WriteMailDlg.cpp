@@ -12,7 +12,7 @@
 // CWriteMailDlg 对话框
 
 IMPLEMENT_DYNAMIC(CWriteMailDlg, CDialog)
-
+int process = 0;
 CWriteMailDlg::CWriteMailDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CWriteMailDlg::IDD, pParent)
 	, m_editTarget(_T(""))
@@ -32,11 +32,14 @@ void CWriteMailDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TARGET_EDIT, m_editTarget);
 	DDX_Text(pDX, IDC_SUBJECT_EDIT, m_editSubject);
 	DDX_Text(pDX, IDC_CONTENT_EDIT, m_editContent);
+	DDX_Control(pDX, IDC_PROGRESS1, m_pro);
 }
 
 
 BEGIN_MESSAGE_MAP(CWriteMailDlg, CDialog)
 	ON_BN_CLICKED(IDC_SEND_MAIL_BUTTON, &CWriteMailDlg::OnBnClickedSendMailButton)
+	ON_WM_TIMER()
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 
@@ -63,6 +66,13 @@ BOOL CWriteMailDlg::PreTranslateMessage(MSG* pMsg)
 
 void CWriteMailDlg::OnBnClickedSendMailButton()
 {
+	INT_PTR nRes;
+
+	// 显示消息对话框   
+	nRes = MessageBox(_T("您确定要进行发送操作吗？"), _T("发邮件"), MB_OKCANCEL | MB_ICONQUESTION);
+	// 判断消息对话框返回值。如果为IDCANCEL就return，否则继续向下执行   
+	if (IDCANCEL == nRes)
+		return;
 	// TODO:  在此添加控件通知处理程序代		
 	/*获取登录者用户名*/
 	UpdateData(true);
@@ -117,6 +127,10 @@ void CWriteMailDlg::OnBnClickedSendMailButton()
 	m_smtp.SetEmailTitle(szSubject);
 	m_smtp.SetContent(szContent);
 	m_smtp.SetTargetEmail(szTarget);
+	AfxBeginThread(function, this);
+	AfxBeginThread(function1, this);
+	//MessageBox(_T("执行完毕1"));
+	/*
 	int err;
 	if ((err = m_smtp.SendEmail_Ex()) != 0)
 	{
@@ -131,11 +145,56 @@ void CWriteMailDlg::OnBnClickedSendMailButton()
 	{
 		MessageBox("发送成功");
 	}
-
+	*/
 
 	UpdateData(false);
 	
 
 	
 
+}
+
+
+void CWriteMailDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+
+	CDialog::OnTimer(nIDEvent);
+	m_pro.SetPos(process);
+	if (process == -1)
+	{
+		KillTimer(1);
+		MessageBox(_T("执行完毕"));
+		return;
+	}
+}
+
+
+void CWriteMailDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CDialog::OnShowWindow(bShow, nStatus);
+
+	// TODO:  在此处添加消息处理程序代码
+	process = 0;
+	SetTimer(1, 1000, NULL);
+	m_pro.SetRange(1, 100);
+}
+
+UINT function(LPVOID pParam)
+{
+	for (int i = 0; i < 100; i++){
+		process++;
+		Sleep(25);
+	}
+	process = -1;
+	return 0;
+}
+//这个函数（function）是用来控制进度条变化的函数。
+UINT function1(LPVOID pParam)
+{
+	//=============
+	//在此添加需要处理长时间的代码
+	int err;
+		err = m_smtp.SendEmail_Ex();
+	return 0;
 }

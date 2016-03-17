@@ -7,6 +7,7 @@
 #include "MainMenuDlg.h"
 #include "WriteMailDlg.h"
 #include "ReceiveMainDlg.h"
+#include "MassEmailsDlg.h"
 #include "afxdialogex.h"
 
 
@@ -34,6 +35,7 @@ void CMainMenuDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMainMenuDlg, CDialog)
 	ON_BN_CLICKED(IDC_WRITE_BUTTON, &CMainMenuDlg::OnBnClickedWriteButton)
 	ON_BN_CLICKED(IDC_RECIVE_BUTTON, &CMainMenuDlg::OnBnClickedReciveButton)
+	ON_BN_CLICKED(IDC_SEND_ALL_BUTTON, &CMainMenuDlg::OnBnClickedSendAllButton)
 END_MESSAGE_MAP()
 
 
@@ -86,4 +88,12 @@ void CMainMenuDlg::OnBnClickedReciveButton()
 	MessageBox(strShow);
 	CReceiveMainDlg crecvdlg;
 	crecvdlg.DoModal();
+}
+
+
+void CMainMenuDlg::OnBnClickedSendAllButton()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CMassEmailsDlg cMassDlg;
+	cMassDlg.DoModal();
 }

@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainMenuDlg.h" />
+    <ClInclude Include="MassEmailsDlg.h" />
     <ClInclude Include="MyMailClient.h" />
     <ClInclude Include="MyMailClientDlg.h" />
     <ClInclude Include="pop3.h" />
@@ -115,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainMenuDlg.cpp" />
+    <ClCompile Include="MassEmailsDlg.cpp" />
     <ClCompile Include="MyMailClient.cpp" />
     <ClCompile Include="MyMailClientDlg.cpp" />
     <ClCompile Include="pop3.cpp">

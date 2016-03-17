@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CWriteMailDlg 对话框
@@ -29,4 +30,15 @@ public:
 	CString m_editSubject;
 	// 发送邮件的正文
 	CString m_editContent;
+	CProgressCtrl m_pro;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+//public:
+	
+	//static UINT function(LPVOID pParam);
+	//static UINT function1(LPVOID pParam);
+
 };
+UINT function(LPVOID pParam);
+UINT function1(LPVOID pParam);

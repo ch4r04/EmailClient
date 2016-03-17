@@ -128,6 +128,7 @@ bool CPop3::FetchEx(int num)
 	int flag = 0;
 	unsigned int len;
 	char filename[256];
+	char filepath[256] = "./data/";
 
 	char sendbuf[128];
 	char recvbuf[20480];
@@ -155,9 +156,10 @@ bool CPop3::FetchEx(int num)
 
 			_itoa(num, filename, 10);
 			strcat(filename, ".eml");
+			strcat(filepath, filename);
 
 			flag = 1;
-			fp = fopen(filename, "wb");//准备写文件
+			fp = fopen(filepath, "wb");//准备写文件
 		}
 		len = strlen(recvbuf);
 		fwrite(recvbuf, 1, len, fp);
