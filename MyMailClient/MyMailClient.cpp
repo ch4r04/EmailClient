@@ -11,6 +11,7 @@
 #endif
 
 
+
 // CMyMailClientApp
 
 BEGIN_MESSAGE_MAP(CMyMailClientApp, CWinApp)

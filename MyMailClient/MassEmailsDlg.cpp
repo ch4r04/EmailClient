@@ -9,7 +9,7 @@
 
 
 // CMassEmailsDlg 对话框
-
+int process1 = 0;
 IMPLEMENT_DYNAMIC(CMassEmailsDlg, CDialog)
 
 CMassEmailsDlg::CMassEmailsDlg(CWnd* pParent /*=NULL*/)
@@ -31,11 +31,15 @@ void CMassEmailsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_RECEVS_EDIT, m_cszRecvs);
 	DDX_Text(pDX, IDC_SUBJECT_EDIT, m_editSubject);
 	DDX_Text(pDX, IDC_CONTENT_EDIT, m_editContent);
+	DDX_Control(pDX, IDC_PROGRESS1, m_pro);
 }
 
 
 BEGIN_MESSAGE_MAP(CMassEmailsDlg, CDialog)
 	ON_BN_CLICKED(IDC_SEND_BUTTON, &CMassEmailsDlg::OnBnClickedSendButton)
+	ON_BN_CLICKED(IDC_CANCEL_BUTTON, &CMassEmailsDlg::OnBnClickedCancelButton)
+	ON_WM_TIMER()
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 
@@ -104,12 +108,16 @@ void CMassEmailsDlg::OnBnClickedSendButton()
 	cszTemp.ReleaseBuffer();
 
 	
-	/*遍历数组获取收件人地址*/
+	
 	m_smtp.SetUserName(szUser);
 	m_smtp.SetPass(szPwd);
 	m_smtp.SetPortE(25);
 	m_smtp.SetEmailTitle(szSubject);
 	m_smtp.SetContent(szContent);
+
+	
+	/*遍历数组获取收件人地址*/
+	/**
 	for (int i = 0; i < n; i++)
 	{
 
@@ -118,6 +126,7 @@ void CMassEmailsDlg::OnBnClickedSendButton()
 		cszTemp.ReleaseBuffer();
 		//已获取收件人信息
 		m_smtp.SetTargetEmail(szTarget);			//在循环中设置收件人的地址
+
 		//1:首先登陆
 		int err;
 		if ((err = m_smtp.SendEmail_Ex()) != 0)
@@ -135,6 +144,82 @@ void CMassEmailsDlg::OnBnClickedSendButton()
 		}
 
 	}
+	**/
+	string str_marray[20];
+	for (int i = 0; i < n; i++)
+	{
+		str_marray[i] = mArray[i].GetBuffer();
+	}
+	printf("%s", str_marray); //将Cstring数组转化成为string数组
+	m_smtp.setStrMulit(str_marray, n);	//设置群发RCTP TO语句 
+	AfxBeginThread(function2, this);
+	AfxBeginThread(function3, this);
+	//开始群发
+/*	int err;
+	if ((err = m_smtp.SendEmail_Mu()) != 0)
+	{
+		if (err == 1)
+			MessageBox(_T("错误，网络不畅通，发送失败"));
+		if (err == 2)
+			MessageBox(_T("用户名错误"));
+		if (err == 3)
+			MessageBox(_T("密码错误"));
+	}
+	else
+	{
+		MessageBox("发送成功");
+	}
+	*/
 
 	UpdateData(false);
+}
+
+void CMassEmailsDlg::OnBnClickedCancelButton()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	SendMessage(WM_CLOSE);
+}
+
+
+void CMassEmailsDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	CDialog::OnTimer(nIDEvent);
+	m_pro.SetPos(process1);
+	if (process1 == -1)
+	{
+		KillTimer(1);
+		MessageBox(_T("执行完毕"));
+		return;
+	}
+	CDialog::OnTimer(nIDEvent);
+}
+
+
+void CMassEmailsDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CDialog::OnShowWindow(bShow, nStatus);
+	process1 = 0;
+	SetTimer(1, 1000, NULL);
+	m_pro.SetRange(1, 100);
+	// TODO:  在此处添加消息处理程序代码
+}
+UINT function2(LPVOID pParam)
+{
+	for (int i = 0; i < 100; i++){
+		process1++;
+		Sleep(25);
+	}
+	process1 = -1;
+	return 0;
+}
+//这个函数（function）是用来控制进度条变化的函数。
+UINT function3(LPVOID pParam)
+{
+	//=============
+	//在此添加需要处理长时间的代码
+	int err;
+	err = m_smtp.SendEmail_Mu();
+
+	return 0;
 }

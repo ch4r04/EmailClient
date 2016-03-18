@@ -244,6 +244,40 @@ bool CSmtp::SendEmailHead()     //发送邮件头部信息
 	return true;
 }
 
+bool CSmtp::SendEmailHead_Mulit()     // 多发邮件的实现 遍历数组，构造新字符串
+{
+	string sendBuff;
+	sendBuff = "MAIL FROM: <" + user + ">\r\n";
+	if (false == Send(sendBuff) || false == Recv())
+	{
+		return false; /*表示发送失败由于网络错误*/
+	}
+
+
+	sendBuff.empty();
+	sendBuff = targetAddr_Mulit;
+	if (false == Send(sendBuff) || false == Recv())
+	{
+		return false; /*表示发送失败由于网络错误*/
+	}
+
+	sendBuff.empty();
+	sendBuff = "DATA\r\n";
+	if (false == Send(sendBuff) || false == Recv())
+	{
+		return false; //表示发送失败由于网络错误  
+	}
+
+	sendBuff.empty();
+	FormatEmailHead(sendBuff);
+	if (false == Send(sendBuff))
+		//发送完头部之后不必调用接收函数,因为你没有\r\n.\r\n结尾，服务器认为你没有发完数据，所以不会返回什么值  
+	{
+		return false; /*表示发送失败由于网络错误*/
+	}
+	return true;
+}
+
 void CSmtp::FormatEmailHead(string &email)
 {/*格式化要发送的内容*/
 	email = "From: ";
@@ -287,11 +321,18 @@ bool CSmtp::SendEnd() /*发送结尾信息*/
 		return false;
 	}
 	cout << buff << endl;
+	//sendBuff.empty();
+	//sendBuff = "QUIT\r\n";
+	return (Send(sendBuff) && Recv());
+}
+
+bool CSmtp::Quit(){	/*发送退出会话指令*/
+	string sendBuff;
 	sendBuff.empty();
 	sendBuff = "QUIT\r\n";
 	return (Send(sendBuff) && Recv());
 }
-
+//单发模式
 int CSmtp::SendEmail_Ex()
 {
 	if (false == CreateConn())
@@ -315,6 +356,41 @@ int CSmtp::SendEmail_Ex()
 	if (false == SendEnd())
 	{
 		return 1; /*错误码1是由于网络的错误*/
+	}
+	if (false == Quit())
+	{
+		return 1;/*退出时网络错误*/
+	}
+	return 0; /*0表示没有出错*/
+}
+//群发模式
+int CSmtp::SendEmail_Mu(){
+
+	if (false == CreateConn())
+	{
+		return 1;
+	}
+	//Recv();  
+	int err = Login(); //先登录  
+	if (err != 0)
+	{
+		return err; //错误代码必须要返回  
+	}
+	if (false == SendEmailHead_Mulit()) //发送EMAIL头部信息  
+	{
+		return 1; /*错误码1是由于网络的错误*/
+	}
+	if (false == SendEmailContent())
+	{
+		return 1; /*错误码1是由于网络的错误*/
+	}
+	if (false == SendEnd())
+	{
+		return 1; /*错误码1是由于网络的错误*/
+	}
+	if (false == Quit())
+	{
+		return 1;/*退出时网络错误*/
 	}
 	return 0; /*0表示没有出错*/
 }
@@ -348,4 +424,18 @@ void CSmtp::SetContent(string &content)
 void CSmtp::SetPortE(int port)
 {
 	this->port = port;
+}
+void CSmtp::setStrMulit(string mArray[], int count){
+	string strBuff ;
+	//遍历数组，在前面加上 RCPT TO:
+	for (int i = 0; i < count; i++)
+	{
+		strBuff += "RCPT TO:";
+		strBuff += " <";
+		strBuff += mArray[i];	//add first
+		strBuff += ">\r\n";
+	}
+	targetAddr_Mulit = strBuff;	//设置转发语句
+
+
 }

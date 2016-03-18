@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(CWriteMailDlg, CDialog)
 	ON_BN_CLICKED(IDC_SEND_MAIL_BUTTON, &CWriteMailDlg::OnBnClickedSendMailButton)
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()
+	ON_BN_CLICKED(IDC_CANCEL_MAIL_EDIT, &CWriteMailDlg::OnBnClickedCancelMailEdit)
 END_MESSAGE_MAP()
 
 
@@ -197,4 +198,11 @@ UINT function1(LPVOID pParam)
 	int err;
 		err = m_smtp.SendEmail_Ex();
 	return 0;
+}
+
+
+void CWriteMailDlg::OnBnClickedCancelMailEdit()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	SendMessage(WM_CLOSE);
 }

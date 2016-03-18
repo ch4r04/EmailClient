@@ -39,6 +39,7 @@ public:
 	//static UINT function(LPVOID pParam);
 	//static UINT function1(LPVOID pParam);
 
+	afx_msg void OnBnClickedCancelMailEdit();
 };
 UINT function(LPVOID pParam);
 UINT function1(LPVOID pParam);

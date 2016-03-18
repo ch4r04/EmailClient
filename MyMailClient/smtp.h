@@ -18,6 +18,7 @@ private:
 	string user;
 	string pass;
 	string targetAddr;
+	string targetAddr_Mulit;
 	string title;
 	string content;
 
@@ -43,9 +44,11 @@ public:
 	void FormatEmailHead(string &email);	//格式化邮件信息
 	int Login();
 	bool SendEmailHead();//发送邮件的头部
+	bool SendEmailHead_Mulit();	//发送邮件头部 多个收件人
 	bool SendEmailContent();	//发送邮件正文
 	int SendAttachment_Ex();
 	bool SendEnd();
+	bool Quit();
 
 	//getter & setter
 	void SetSrvDomain(string &domain);
@@ -56,5 +59,7 @@ public:
 	void SetContent(string &content);
 	void SetPortE(int port);
 	int SendEmail_Ex();
+	int SendEmail_Mu();
+	void setStrMulit(string mArray[],int count); // targetAddr_Mulit = {"609461975@qq.com","857856615@qq.com"}
 };
 #endif

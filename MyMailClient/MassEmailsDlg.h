@@ -1,4 +1,5 @@
 #pragma once
+#include "afxcmn.h"
 
 
 // CMassEmailsDlg ¶Ô»°¿ò
@@ -23,4 +24,10 @@ public:
 	CString m_editSubject;
 	CString m_editContent;
 	afx_msg void OnBnClickedSendButton();
+	afx_msg void OnBnClickedCancelButton();
+	CProgressCtrl m_pro;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };
+UINT function2(LPVOID pParam);
+UINT function3(LPVOID pParam);

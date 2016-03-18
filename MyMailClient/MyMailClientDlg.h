@@ -6,6 +6,7 @@
 #include "afxwin.h"
 #include "pop3.h"
 #include "smtp.h"
+#include "MainMenuDlg.h"
 
 extern CSmtp m_smtp;		//设置全局变量 smtp
 extern CPop3 m_pop3;		//设置全局变量 pop
@@ -46,6 +47,8 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CString m_editsmtpaddr;
 	CString m_editpopaddr;
+	CMainMenuDlg *m_cMainDlg;
+	afx_msg void OnBnClickedQuit();
 };
 
 

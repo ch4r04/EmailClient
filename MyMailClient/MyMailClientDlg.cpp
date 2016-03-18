@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "MyMailClient.h"
 #include "MyMailClientDlg.h"
-#include "MainMenuDlg.h"
+//#include "MainMenuDlg.h"
 #include "afxdialogex.h"
 #include <string.h>
 
@@ -75,6 +75,7 @@ BEGIN_MESSAGE_MAP(CMyMailClientDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_CBN_SELCHANGE(IDC_SERVER_COMBO, &CMyMailClientDlg::OnCbnSelchangeServerCombo)
 	ON_BN_CLICKED(IDC_SEL_SERVER_BUTTON, &CMyMailClientDlg::OnBnClickedSelServerButton)
+	ON_BN_CLICKED(IDC_QUIT, &CMyMailClientDlg::OnBnClickedQuit)
 END_MESSAGE_MAP()
 
 
@@ -264,11 +265,16 @@ void CMyMailClientDlg::OnBnClickedSelServerButton()
 		m_pop3.SetUser(m_user);
 		m_pop3.SetPwd(m_pwd);
 	}
-	// 弹出主菜单模块
-	INT_PTR nRes;
-	CMainMenuDlg menuDlg;
-	nRes = menuDlg.DoModal();
 
+	//this->ShowWindow(SW_HIDE);
+	// 弹出主菜单模块 非模态
+	if (NULL == m_cMainDlg)
+	{
+		m_cMainDlg = new CMainMenuDlg();
+		m_cMainDlg->Create(IDD_MAIN_MENU_DIALOG, this);
+	}
+	m_cMainDlg->ShowWindow(SW_SHOW);
+	UpdateData(false);
 }
 
 
@@ -290,4 +296,11 @@ BOOL CMyMailClientDlg::PreTranslateMessage(MSG* pMsg)
 
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CMyMailClientDlg::OnBnClickedQuit()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	SendMessage(WM_CLOSE);
 }

@@ -97,3 +97,23 @@ void CMainMenuDlg::OnBnClickedSendAllButton()
 	CMassEmailsDlg cMassDlg;
 	cMassDlg.DoModal();
 }
+
+
+BOOL CMainMenuDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	
+	
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 异常:  OCX 属性页应返回 FALSE
+}
+
+
+void CMainMenuDlg::OnCancel()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+
+	CDialog::OnCancel();
+}
